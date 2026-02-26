@@ -15,6 +15,7 @@ urlpatterns = [
     path('api/accounts/create', views.CreateAccountAPI.as_view(), name='create-account-api'),
 
     path('transfer/', views.transfer, name='transfer'),
+    path('api/transfer', views.TransferAPI.as_view(), name='transfer-api'),
 
     path('statements/', views.statements, name='statements'),
 

@@ -17,7 +17,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
-from .serializers import  UserSerializer, TransactionSerializer, AccountSerializer
+from .serializers import  UserSerializer, TransactionSerializer, AccountSerializer, TransferSerializer
+from .services import TransferService
 
 def register_user(request):
     if request.method == 'POST':
@@ -342,6 +343,58 @@ def transfer(request):
             messages.error(request, f"System error: {str(e)}")
 
     return render(request, 'base/transfer.html', context)
+
+# writting the transfer logic in an api
+class TransferAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        accounts = Accounts.objects.filter(userid=request.user.users)
+        serializer = AccountSerializer(accounts, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        # this is where we use serializer module to handle validation part of the request ->
+        serializer = TransferSerializer(data=request.data, context={"request": request})
+
+        if not serializer.is_valid(): # if validation fails then response of "bad_request" is send to the client
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        try: # this is where we use service module to execute business logic ->
+            transaction_obj = TransferService.execute_transfer(
+                user=request.user,
+                from_account_no=serializer.validated_data['from_account'],
+                to_account_no=serializer.validated_data['to_account'],
+                amount=serializer.validated_data['amount']
+            )
+
+            response_serializer = TransactionSerializer(transaction_obj)
+
+            return Response(
+                {
+                    "message": "Transfer successful",
+                    "transaction": response_serializer.data
+                },
+                status=status.HTTP_201_CREATED
+            )
+
+        except Accounts.DoesNotExist:
+            return Response(
+                {"error": "Invalid account details."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        except ValueError as e:
+            return Response(
+                {"error": str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        except Exception as e:
+            return Response(
+                {"error": f"System error: {str(e)}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 ################################################################################################################
 
