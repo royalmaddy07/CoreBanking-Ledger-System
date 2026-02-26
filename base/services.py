@@ -4,9 +4,10 @@ from django.utils import timezone
 from decimal import Decimal
 from .models import Users, Transactions, Transactionstatus, Accounts, Auditlog, Ledgerentries
 
+#################################################################################################################
+
 class TransferService:
     # this service class logic is reusable in : CLI, react frontend, microservices, celery, drf, etc
-
     @staticmethod
     def execute_transfer(user, from_account_no, to_account_no, amount):
         with transaction.atomic():
