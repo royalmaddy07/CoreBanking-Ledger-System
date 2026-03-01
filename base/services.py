@@ -3,6 +3,33 @@ from django.db import transaction
 from django.utils import timezone
 from decimal import Decimal
 from .models import Users, Transactions, Transactionstatus, Accounts, Auditlog, Ledgerentries
+from django.contrib.auth.models import User # this is django User model used for authentication
+
+# ===============================================================================================================
+
+class RegistrationService:
+    # andar jo ham methods likhenge -> they have to be static, they can used without creating instances of the class
+    # these functions act like normal methods but live inside classes
+    # @transaction.atomic -> DB operations inside the function, if it fails then everything rollbacks
+    @staticmethod
+    @transaction.atomic
+    def register_user(name, email, password, phone):
+        auth_user = User.objects.create_user(
+            username=email,
+            email=email,
+            password=password
+        )# create django user profile
+
+        banking_profile = Users.objects.create(
+            auth_user=auth_user,
+            name=name,
+            email=email,
+            phone=phone,
+            status='ACTIVE',
+            createdate=timezone.now()
+        )# create a user banking profile
+
+        return banking_profile
 
 #################################################################################################################
 

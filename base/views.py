@@ -18,7 +18,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from .serializers import  UserSerializer, TransactionSerializer, AccountSerializer, TransferSerializer
-from .services import TransferService
+from .serializers import RegistrationSerializer
+from .services import RegistrationService ,TransferService
 
 def register_user(request):
     if request.method == 'POST':
@@ -67,6 +68,51 @@ def register_user(request):
         
     return render(request, 'base/register.html')
 
+# converting user registration to apiView ->
+class RegistrationAPI(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def post(self,request):
+        #  data is a dictionary object -> serializer expects a dictionary
+        serializer = RegistrationSerializer(data=request.data)
+        # after doing validation of data using serializer -> check whether correctly validation or not
+        if not serializer.is_valid():
+            return Response({
+                'success' : False,
+                'error' : serializer.errors
+            }, status=400)
+        # serializer.errors -> is a property that gives a dictionary of all the errors
+        # key -> field and value -> error which has occured with that field
+        try:
+            #serializer.validated_data is a dictionary containing the cleaned/validated data after successfully 
+            # calling is_valid() on a serializer, key = variable, value = validated_data_ki_value
+            # respective service class ka function call karo with the respective parameters ->
+            user = RegistrationService.register_user(
+                name = serializer.validated_data['name'],
+                email=serializer.validated_data['email'],
+                password=serializer.validated_data['password'],
+                phone=serializer.validated_data['phone']
+            )
+
+            return Response(
+                {
+                    'success' : True,
+                    'message' : 'User registration completed Successfully'
+                }, status=201
+            )
+        except IntegrityError:
+            return Response(
+                {"success": False, "error": "Email or phone already exists."},
+                status=400
+            )
+        except Exception as e:
+            return Response(
+                {"success": False, "error": str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+###############################################################################################################
 
 def login_user(request):
     if request.user.is_authenticated:
@@ -97,17 +143,12 @@ def logout_user(request):
 
 # base/home page view :
 def home(request):
-    try:
-        accounts = Accounts.objects.filter(userid = request.user.users)
-        active_acc_count = accounts.filter(status = 'ACTIVE').count()
-        context = {
-            'accounts' : accounts,
-            'active_acc_count' : active_acc_count,
-        }
-    except RelationalObjectDoesNotExist:
-        # if the user is the admin himself
-        messages.error(request, "System Identity not found! Please Login as a user")
-        return redirect("login")
+    accounts = Accounts.objects.filter(userid = request.user.users)
+    active_acc_count = accounts.filter(status = 'ACTIVE').count()
+    context = {
+        'accounts' : accounts,
+        'active_acc_count' : active_acc_count,
+    }
     return render(request, 'base/home.html', context)
 
 # converting Home view to DRF APIView -> 
