@@ -38,7 +38,7 @@ class RegistrationSerializer(serializers.Serializer):
         if len(data["phone"]) != 10 or not data["phone"].isdigit():
             raise serializers.ValidationError("Invalid phone format. 10 digits required.")
 
-        if User.objects.filter(email=data["email"]).exists():
+        if User.objects.filter(username=data["email"]).exists():
             raise serializers.ValidationError("Email already registered.")
 
         if Users.objects.filter(phone=data["phone"]).exists():
