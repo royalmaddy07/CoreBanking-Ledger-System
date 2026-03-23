@@ -89,3 +89,15 @@ class TransferSerializer(serializers.Serializer):
             raise serializers.ValidationError("Cannot transfer to the same account.")
         
         return data
+    
+# ==============================================================================================================
+
+class DeactivateAccountSerializer(serializers.Serializer):
+    account_number = serializers.CharField()
+    verify_password = serializers.CharField(write_only=True) # field is only used for i/p, never shown in o/p
+
+    def validate(self, data):
+        request = self.context.get('request')
+        if not request.user.check_password(data.get('verify_password')):
+            raise serializers.ValidationError('Incorrect Password.')
+        return data

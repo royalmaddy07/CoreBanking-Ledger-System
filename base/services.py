@@ -123,3 +123,80 @@ class TransferService:
             )
 
             return transaction_obj
+        
+# ==============================================================================================================
+
+class DeactivateAccountService:
+    @staticmethod
+    @transaction.atomic
+    def deactivate_account(user, account_number):
+        account = Accounts.objects.get(
+            accountnumber=account_number,
+            userid=user.users
+        )
+
+        if(account.status == 'INACTIVE'):
+            raise ValueError("Account is already inactive.")
+
+        if(account.balance > 0):
+            raise ValueError("Account balance must be zero before deactivating.")
+        
+        account.status = 'INACTIVE'
+        account.save()
+
+        Auditlog.objects.create(
+            entityname='Accounts',
+            entityid=account.accountid,
+            action='ACCOUNT_DEACTIVATED',
+            performedby=user.users.userid,
+            createdate=timezone.now()
+        )
+
+        return account
+    
+# ================================================================================================================
+
+class BeneficiaryService:
+    @staticmethod
+    def add_beneficiary(user, beneficiary_acc_no):
+        return True
+
+# ==============================================================================================================
+
+class StatementsService:
+    @staticmethod
+    def get_statements(user, account_number=None):
+        ledger_qs = Ledgerentries.objects.select_related(
+            'transactionid',
+            'accountid',
+            'transactionid__fromaccountid',
+            'transactionid__toaccountid'
+        ).filter(accountid__userid=user.users)
+
+        # optional filter by account number
+        if account_number:
+            ledger_qs = ledger_qs.filter(accountid__accountnumber=account_number)
+
+        ledger_qs = ledger_qs.order_by('-createdate')
+
+        transactions = []
+        for entry in ledger_qs:
+            txn = entry.transactionid
+
+            if entry.entrytype == 'DEBIT':
+                other_party = txn.toaccountid.accountnumber
+                description = f"Transfer to {other_party}"
+            else:
+                other_party = txn.fromaccountid.accountnumber
+                description = f"Transfer from {other_party}"
+
+            transactions.append({
+                'id': txn.transactionid,
+                'created_at': entry.createdate,
+                'description': description,
+                'other_party': other_party,
+                'type': entry.entrytype,
+                'amount': str(entry.amount)  # convert Decimal to string for JSON
+            })
+
+        return transactions

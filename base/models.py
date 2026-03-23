@@ -81,3 +81,15 @@ class Users(models.Model):
     class Meta:
         managed = False
         db_table = 'users'
+
+class Beneficiaries(models.Model):
+    beneficiaryid = models.BigAutoField(db_column='beneficiaryID', primary_key=True)
+    userid = models.ForeignKey('Users', models.DO_NOTHING, db_column='userID')
+    accountnumber = models.CharField(db_column='accountNumber', max_length=50)
+    nickname = models.CharField(max_length=50, null=True, blank=True)
+    addedtype = models.CharField(db_column='addedType', max_length=10)
+    createdate = models.DateTimeField(db_column='createdAt')
+
+    class Meta:
+        managed = False
+        db_table = 'beneficiaries'

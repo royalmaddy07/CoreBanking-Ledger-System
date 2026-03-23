@@ -18,8 +18,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from .serializers import  UserSerializer, TransactionSerializer, AccountSerializer, TransferSerializer
-from .serializers import RegistrationSerializer, LoginSerializer
-from .services import RegistrationService ,TransferService, LoginService, LogoutService
+from .serializers import RegistrationSerializer, LoginSerializer, DeactivateAccountSerializer
+from .services import RegistrationService ,TransferService, LoginService, LogoutService, DeactivateAccountService, StatementsService
 
 def register_user(request):
     if request.method == 'POST':
@@ -321,6 +321,51 @@ def deactivate_account(request, pk):
 
     return render(request, 'base/deactivate_account.html', context)
 
+class DeactivateAccountAPI(APIView):
+    permission_classes = [IsAuthenticated]
+    # why is permission_classes list = [IsAuthenticated required] used ?
+    # why is authentication_classes list used ?
+
+    def post(self, request):
+        serializer = DeactivateAccountSerializer(
+            data = request.data,
+            context = {'request' : request}
+        )
+
+        if not serializer.is_valid():
+            return Response({
+                "success" : False,
+                "error" : serializer.errors
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            account = DeactivateAccountService.deactivate_account(
+                user=request.user,
+                account_number=serializer.validated_data['account_number'] 
+            )
+            response_serializer = AccountSerializer(account)
+            return Response({
+                "success": True, 
+                "account": response_serializer.data
+            }, status=status.HTTP_200_OK)
+        
+        except Accounts.DoesNotExist:
+            return Response(
+                {"success": False, "error": "Account not found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        except ValueError as e:
+            return Response(
+                {"success": False, "error": str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        except Exception as e:
+            return Response(
+                {"success": False, "error": str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+
 #################################################################################################################
 
 # view for performing a transaction ->
@@ -488,6 +533,32 @@ class TransferAPI(APIView):
 
 ################################################################################################################
 
+class StatementsAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        # optional query parameter -> /api/statements?account_number=9876543210
+        account_number = request.GET.get('account_number', None)
+        try:
+            transactions = StatementsService.get_statements(
+                user=request.user,
+                account_number=account_number
+            )
+            return Response(
+                {
+                    "success": True,
+                    "count": len(transactions),
+                    "transactions": transactions
+                },
+                status=status.HTTP_200_OK
+            )
+        except Exception as e:
+            return Response(
+                {"success": False, "error": str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+
 # view for retrieving bank statements ->
 def statements(request):
     user_accounts = Accounts.objects.filter(userid = request.user.users)
@@ -535,7 +606,7 @@ def statements(request):
 
     return render(request, 'base/statements.html', context)
 
-    return render(request, 'base/statements.html', context)
+# ===============================================================================================================
 
 # view for add payees
 def beneficiaries(request):

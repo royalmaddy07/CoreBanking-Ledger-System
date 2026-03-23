@@ -21,8 +21,10 @@ urlpatterns = [
     path('api/transfer', views.TransferAPI.as_view(), name='transfer-api'),
 
     path('statements/', views.statements, name='statements'),
+    path('api/statements', views.StatementsAPI.as_view(), name='statements-api'),
 
     path('deactivate_account/<int:pk>', views.deactivate_account, name='deactivate_account'),
+    path('api/accounts/deactivate', views.DeactivateAccountAPI.as_view(), name='deactivate-account-api'),
 
     path('beneficiaries/', views.beneficiaries, name='beneficiaries'),
 
