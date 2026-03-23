@@ -69,3 +69,15 @@ create table auditLog(
     performedBy bigint not null,
     createdAt timestamp not null default current_timestamp
 );
+
+CREATE TABLE beneficiaries (
+    beneficiaryID   BIGINT PRIMARY KEY AUTO_INCREMENT,
+    userID          BIGINT NOT NULL,
+    accountNumber   VARCHAR(50) NOT NULL,
+    nickname        VARCHAR(50),
+    addedType       VARCHAR(10) NOT NULL,
+    createdAt       TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (userID) REFERENCES users(userID),
+    UNIQUE KEY unique_user_account (userID, accountNumber)
+) ENGINE = InnoDB;
