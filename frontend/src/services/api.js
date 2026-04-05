@@ -1,7 +1,7 @@
 // Base URL for the Django API
 // In production on Vercel, read from an environment variable:
-// e.g. import.meta.env.VITE_API_URL || 'https://your-backend.onrender.com'
-export const API_BASE = 'http://127.0.0.1:8000/api';
+// Set VITE_API_BASE to your Render URL in Vercel's Environment Variables
+export const API_BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:8000/api';
 
 // Helper for making API calls with standard headers and Token Auth
 export const apiCall = async (endpoint, options = {}) => {
