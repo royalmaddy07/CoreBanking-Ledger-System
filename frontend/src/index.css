@@ -1,0 +1,85 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* Custom Scrollbar for a premium feel */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #0D0A14; 
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #2D223B; 
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #A475F9; 
+  }
+
+  /* Smooth selection color */
+  ::selection {
+    background: rgba(139, 92, 246, 0.3);
+    color: #fff;
+  }
+}
+
+@layer components {
+  .glass-panel {
+    @apply bg-surface/60 backdrop-blur-md border border-white/5 shadow-xl;
+  }
+  
+  .glass-card {
+    @apply bg-surfaceLight/40 backdrop-blur-sm border border-white/10 rounded-2xl shadow-lg;
+    transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.4s ease;
+  }
+  .glass-card:hover {
+    @apply border-royal-500/40;
+    box-shadow: 0 0 30px rgba(139, 92, 246, 0.08);
+  }
+  
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-royal-400 to-royal-600;
+  }
+  
+  .text-gradient-gold {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-gold-400 to-yellow-200;
+  }
+
+  /* Smooth input styling */
+  .form-input {
+    @apply w-full bg-surface/50 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 font-medium;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  .form-input:focus {
+    @apply outline-none border-royal-500;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+  }
+
+  /* Premium button styles */
+  .btn-primary {
+    @apply bg-royal-600 text-white font-semibold py-3.5 rounded-xl flex justify-center items-center gap-2;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 15px rgba(124, 58, 237, 0.25);
+  }
+  .btn-primary:hover {
+    @apply bg-royal-500;
+    box-shadow: 0 0 30px rgba(124, 58, 237, 0.4);
+    transform: translateY(-1px);
+  }
+  .btn-primary:active {
+    transform: translateY(0px);
+  }
+  .btn-primary:disabled {
+    @apply bg-royal-600/50;
+    box-shadow: none;
+    transform: none;
+  }
+}
+
+/* Smooth page-level transitions — only interactive properties, NOT layout */
+a, button, input, textarea, select {
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
+}
