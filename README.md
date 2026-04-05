@@ -1,85 +1,98 @@
-# BankEngine | High-Integrity Core Banking Ledger
+# Nexus Wealth | High-Integrity Core Banking System
 
-A backend-focused **digital BankEngine system** designed with an emphasis on **data integrity, transactional correctness, and system design principles**.  
-The project evolves from a standalone banking database design done in an earlier repo to a full backend service with authentication, business logic, and API-driven workflows.
+**Nexus Wealth** (built on the *BankEngine* ledger engine) is a full-stack, modern neobank system designed with an emphasis on both **transactional correctness** and a **premium, glassmorphic user experience**.
+
+The project features a fully decoupled architecture: a robust Django REST Framework backend handling strict ACID-compliant financial logic, paired with a blazing-fast, heavily animated Vite + React frontend.
 
 ---
 
 ## 📌 Overview
 
-This project simulates the **core backend of a digital wallet / neobank system**, similar to those used in fintech platforms.  
-It prioritizes correctness over UI, focusing on **ACID-compliant transactions**, **ledger-based accounting**, and **clean separation of concerns**.
+This project simulates the core infrastructure and frontend interface of a next-generation digital wallet platform. 
 
-The system was built in two phases:
-1. **Banking Database Design** – normalized schema with strict constraints
-2. **Backend Integration** – Django-based service layer on top of the schema
+It was built in three major phases:
+1. **Banking Database & Logic** – A normalized, relational ledger schema with strict database constraints and row-level locking.
+2. **Decoupled API Layer** – A Django REST Framework service layer exposing secure endpoints and handling concurrency control.
+3. **Premium Frontend Application** – A React 18 SPA featuring glassmorphism, fluid animations (via Tailwind CSS), and asynchronous state management.
 
 ---
 
-BankEngine is a robust, full-stack financial system designed to manage multi-tier ledgers with strict **ACID compliance**. Built with Python and Django, the system prioritizes transactional integrity and server-side security over client-side fluff.
+## 🚀 Key Features
 
+### 💻 Frontend Excellence (Nexus Wealth UI)
+* **Dynamic Animations:** Scroll-triggered animations, interactive hover states, and staggered layout entries give the app a premium, high-tech fintech feel.
+* **Component-Driven Dashboard:** A comprehensive dashboard featuring account overview side-drawers, animated transaction success screens, and interactive beneficiary quick-picks.
+* **Responsive Glassmorphism:** Custom Tailwind configuration utilizing deep royal purples and frosted glass floating panels optimized for both desktop and mobile views.
 
-
-## 🚀 Core Backend Features
-
+### ⚙️ Core Backend Integrity (BankEngine)
 * **Transactional Integrity (ACID):** Utilizes Django's `transaction.atomic` blocks to ensure that fund transfers either complete entirely or roll back fully, preventing data corruption or "phantom" money.
-* **Ledger Provisioning:** Dynamic creation of different financial instruments (Savings, Current, Investment) with independent liquidity tracking.
-* **Security Protocols:** Implements identity re-verification for high-risk operations (ledger termination/deactivation) and strict server-side validation to prevent overdrafts.
-* **System Design:** Normalized relational database schema designed for high-cardinality relationships between users, accounts, and immutable transaction logs.
-* **Real-time Monitoring:** A hardware-accelerated dashboard utilizing the **Intersection Observer API** for efficient data visualization.
+* **Concurrency Control:** Utilizes `select_for_update()` to handle row-level locking and prevent "Double Spending" race conditions during high-volume transfers.
+* **Account State Machine:** Ledgers follow strict states (`PROVISIONED`, `BLOCKED`, `TERMINATED`), ensuring frozen or invalid accounts cannot be interacted with.
 
+---
 
 ## 🛠️ Tech Stack
 
 * **Language:** Python 3.10+, JavaScript (ES6+)
-* **Backend:** Django 4.x, Django REST Framework (Decoupled API Architecture)
-* **Frontend:** React 18, Vite, Tailwind CSS (Custom Nexus Wealth UI)
+* **Backend:** Django 4.x, Django REST Framework, django-cors-headers
+* **Frontend:** React 18, Vite, Tailwind CSS, Lucide React (Icons), React Router
 * **Database:** MySQL / SQLite
 
+---
 
-## 🔧 System Design & Logic
-
-### Concurrency Control
-To prevent "Double Spending" or race conditions during high-volume transfers, the engine is designed to handle row-level locking. This ensures that while one transaction is updating a balance, others must wait for the lock to release.
-
-### Account State Machine
-Ledgers follow a strict state flow:
-1.  **PROVISIONED:** Account is active and can receive/send funds.
-2.  **BLOCKED:** System-triggered state when active liquidity is detected during a termination request.
-3.  **TERMINATED:** Permanent deactivation; the node is frozen in the database for audit purposes but removed from the active engine.
-
-### 📸 Screenshots
+## 📸 Screenshots
 
 #### Landing Page
 ![Nexus Wealth Landing Page](assets/landingPage.png)
 
 #### User Dashboard Overview
-![Bank Engine Dashboard](assets/Dashboard.png)
+![Nexus Wealth Dashboard](assets/Dashboard.png)
 
 #### Database Architecture
 ![ER Diagram of the Database](assets/ER-Diagram.png)
 
+---
 
 ## 🚦 Getting Started
 
-1. **Clone the repository:**
-   ```bash
-   git clone [https://github.com/yourusername/BankEngine.git](https://github.com/yourusername/BankEngine.git)
+To run the full stack locally, you will need to start both the backend server and the frontend development server.
 
-2. **Setup Virtual Enviroument**
-    ```bash
-    python -m venv venv
-    source venv/bin/activate  # On Windows: venv\Scripts\activate
+### 1. Backend Setup (Django)
 
-3. **Install Dependencies**
-    ```bash
-    pip install -r requirements.txt
+Open a terminal in the root directory:
 
-5. **Make Database Migrations**
-    ```bash
-    python manage.py makemigrations
-    python manage.py migrate
+```bash
+# Navigate to the backend directory (or root, depending on where manage.py is located)
+cd backend  # If applicable
 
-4. **Run Server**
-    ```bash
-    python manage.py runserver
+# Setup Virtual Environment
+python -m venv venv
+source venv/bin/activate  # On Windows run: venv\Scripts\activate
+
+# Install Dependencies
+pip install -r requirements.txt
+
+# Run Migrations
+python manage.py makemigrations
+python manage.py migrate
+
+# Start the Backend Server (Runs on http://127.0.0.1:8000)
+python manage.py runserver
+```
+
+### 2. Frontend Setup (React/Vite)
+
+Open a **second** terminal instance in the root directory:
+
+```bash
+# Navigate to the frontend directory
+cd frontend
+
+# Install Node dependencies
+npm install
+
+# Start the Frontend Development Server (Runs on http://localhost:5173)
+npm run dev
+```
+
+The application is now fully running. Navigate to `http://localhost:5173` in your browser to interact with Nexus Wealth.
