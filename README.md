@@ -31,10 +31,11 @@ BankEngine is a robust, full-stack financial system designed to manage multi-tie
 
 ## 🛠️ Tech Stack
 
-* **Language:** Python 3.10+
-* **Framework:** Django 4.x (Monolithic Architecture)
-* **Database:** MySQL (Production/Development)
-* **Frontend:** Modular CSS3, Vanilla JavaScript (ES6+), Django Templates
+* **Language:** Python 3.10+, JavaScript (ES6+)
+* **Backend:** Django 4.x, Django REST Framework (Decoupled API Architecture)
+* **Frontend:** React 18, Vite, Tailwind CSS (Custom Nexus Wealth UI)
+* **Database:** MySQL / SQLite
+
 
 ## 🔧 System Design & Logic
 
@@ -48,15 +49,16 @@ Ledgers follow a strict state flow:
 3.  **TERMINATED:** Permanent deactivation; the node is frozen in the database for audit purposes but removed from the active engine.
 
 ### 📸 Screenshots
+
+#### Landing Page
+![Nexus Wealth Landing Page](assets/landingPage.png)
+
+#### User Dashboard Overview
+![Bank Engine Dashboard](assets/Dashboard.png)
+
+#### Database Architecture
 ![ER Diagram of the Database](assets/ER-Diagram.png)
 
-![Authentication/authorization](assets/image1.png)
-
-![Dashboard](assets/image2.png)
-
-![Funds Tranfer](assets/image3.png)
-
-![Ledger Deactivation](assets/image4.png)
 
 ## 🚦 Getting Started
 
