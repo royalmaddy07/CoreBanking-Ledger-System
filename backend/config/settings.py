@@ -16,9 +16,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-(if2t^gs1-i=41tk=80@*)-8w3*399am49qn=v*#*%z38pg@%t')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+# On Render, DEBUG defaults to False for security
+DEBUG = os.environ.get('DEBUG', 'False' if os.environ.get('RENDER') else 'True') == 'True'
 
+# On Render, allow the .onrender.com subdomain automatically
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 
 # Application definition
