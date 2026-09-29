@@ -73,13 +73,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-# Database — MySQL connection
-# We use an already-designed database using MySQL
+# Database — PostgreSQL via Neon in production, local Postgres for dev
+# Set DATABASE_URL environment variable on Render with your Neon connection string
 import dj_database_url
 
 DATABASES = {
     'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL', 'mysql://root:12345@localhost:3306/banking_wallet_db'),
+        default=os.environ.get('DATABASE_URL', 'postgresql://localhost:5432/banking_wallet_db'),
         conn_max_age=600,
         conn_health_checks=True,
     )
