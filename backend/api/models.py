@@ -12,7 +12,7 @@ class Accounts(models.Model):
     createdate = models.DateTimeField(db_column='createdAt')  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'accounts'
 
 # this is our Auditlog table
@@ -25,7 +25,7 @@ class Auditlog(models.Model):
     createdate = models.DateTimeField(db_column='createdAt')  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'auditlog'
 
 # this is our Ledgerentries table
@@ -38,7 +38,7 @@ class Ledgerentries(models.Model):
     createdate = models.DateTimeField(db_column='createdAt')  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'ledgerentries'
 
 # this is our transactions table
@@ -52,7 +52,7 @@ class Transactions(models.Model):
     createdate = models.DateTimeField(db_column='createdAt')  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'transactions'
 
 # this is our Transactionstatus table
@@ -61,7 +61,7 @@ class Transactionstatus(models.Model):
     statusname = models.CharField(db_column='statusName', max_length=50)  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'transactionstatus'
 
 # this is our Users table
@@ -79,7 +79,7 @@ class Users(models.Model):
     createdate = models.DateTimeField(db_column='createdAt')  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'users'
 
 class Beneficiaries(models.Model):
@@ -91,7 +91,7 @@ class Beneficiaries(models.Model):
     createdate = models.DateTimeField(db_column='createdAt')
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'beneficiaries'
 
 class Fixeddeposits(models.Model):
@@ -107,5 +107,5 @@ class Fixeddeposits(models.Model):
     status = models.CharField(max_length=10, default='ACTIVE')
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'fixeddeposits'
