@@ -1,7 +1,7 @@
 // Base URL for the Django API
 // In production on Vercel, read from an environment variable:
 // Set VITE_API_BASE to your Render URL in Vercel's Environment Variables
-export const API_BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:8000/api';
+export const API_BASE = import.meta.env.VITE_API_BASE || 'https://corebanking-ledger-system.onrender.com/api';
 
 // Helper for making API calls with standard headers and Token Auth
 export const apiCall = async (endpoint, options = {}) => {
