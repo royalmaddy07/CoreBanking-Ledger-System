@@ -1,3 +1,5 @@
+graphify-out/
+
 # Django & Python Built-ins
 __pycache__/
 *.py[cod]
